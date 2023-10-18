@@ -74,7 +74,11 @@ class CanvasWithControls extends HTMLElement {
         // Set initial canvas width and height
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
-        canvas.style.cursor = 'crosshair';
+
+        
+        let cursorStyle = 'crosshair';
+
+        canvas.style.cursor = cursorStyle;
 
         let color = "#000000";
         let lineWidth = 5;
@@ -170,6 +174,7 @@ class CanvasWithControls extends HTMLElement {
         canvas.addEventListener("mousedown", (event) => {
             // Check if the middle mouse button is pressed or the Alt key is held down
             if (event.button === 1 || event.altKey) {
+                canvas.style.cursor = "move";
             } else {
                 [lastX, lastY] = [event.offsetX * (canvasWidth / canvas.clientWidth), event.offsetY * (canvasHeight / canvas.clientHeight)];
             }
@@ -223,9 +228,11 @@ class CanvasWithControls extends HTMLElement {
             }
         });
 
+
         canvas.addEventListener("mouseup", () => {
             isDrawing = false;
             lastX = undefined; lastY = undefined;
+            canvas.style.cursor = cursorStyle;
         });
 
         canvas.addEventListener("mouseout", () => {
@@ -245,7 +252,6 @@ class CanvasWithControls extends HTMLElement {
         let isLineDrawingMode = true; // Flag for line drawing mode
         let lineWidthLabel = this.shadowRoot.getElementById('line-label');
         let lineWidthInput = this.shadowRoot.getElementById("line-width"); // Line width input element
-        let cursorStyle = 'default';
 
         // Event listener for the line mode toggle button
         const toggleModeButton = this.shadowRoot.getElementById("toggle-mode-button");
