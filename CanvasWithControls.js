@@ -74,7 +74,10 @@ class CanvasWithControls extends HTMLElement {
         // Set initial canvas width and height
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
+        canvas.style.cursor = 'crosshair';
 
+        let color = "#000000";
+        let lineWidth = 5;
         // Initialize canvas properties
         this.ctx.strokeStyle = "#000000";
         this.ctx.lineWidth = 5;
@@ -82,6 +85,7 @@ class CanvasWithControls extends HTMLElement {
         // Your existing event listeners can be added here
         const colorPicker = this.shadowRoot.getElementById("color-picker");
         colorPicker.addEventListener("input", (event) => {
+            color = event.target.value;
             this.ctx.strokeStyle = event.target.value;
         });
 
@@ -241,6 +245,7 @@ class CanvasWithControls extends HTMLElement {
         let isLineDrawingMode = true; // Flag for line drawing mode
         let lineWidthLabel = this.shadowRoot.getElementById('line-label');
         let lineWidthInput = this.shadowRoot.getElementById("line-width"); // Line width input element
+        let cursorStyle = 'default';
 
         // Event listener for the line mode toggle button
         const toggleModeButton = this.shadowRoot.getElementById("toggle-mode-button");
