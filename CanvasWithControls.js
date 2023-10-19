@@ -7,6 +7,10 @@ export class CanvasWithControls extends HTMLElement {
     constructor() {
         super();
         
+        this.canvasWidth = 800;
+        this.canvasHeight = 600;
+        this.lineWidth = 5;
+
         this.setup();
     }
 
@@ -17,13 +21,18 @@ export class CanvasWithControls extends HTMLElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'width') {
-            this.canvas.width = parseInt(newValue);
-            this.canvasWidth = this.canvas.width;
-            this.ctx.lineWidth = this.lineWidth; // Apply the new line width to the context
+            this.canvasWidth = parseInt(newValue);
+            if(this.canvas) {
+                this.canvas.width = this.canvasWidth;
+                this.ctx.lineWidth = this.lineWidth;
+            } 
         } else if (name === 'height') {
-            this.canvas.height = parseInt(newValue);
-            this.canvasHeight = this.canvas.height;
-            this.ctx.lineWidth = this.lineWidth; // Apply the new line width to the context
+            this.canvasHeight = parseInt(newValue);
+            if(this.canvas) 
+            {
+                this.canvas.height = this.canvasHeight;
+                this.ctx.lineWidth = this.lineWidth;
+            }
         } else if(name === 'controls') { 
             if(newValue && newValue !== 'false') {
                 this.shadowRoot.getElementById('controls-container').style.display = '';
@@ -78,17 +87,15 @@ export class CanvasWithControls extends HTMLElement {
         // Set initial canvas width and height
         canvas.width = this.canvasWidth;
         canvas.height = this.canvasHeight;
-        this.canvasWidth = 800;
-        this.canvasHeight = 600;
         
         let cursorStyle = 'crosshair';
 
         canvas.style.cursor = cursorStyle;
 
         let color = "#000000";
-        this.lineWidth = 5;
         // Initialize canvas properties
         ctx.strokeStyle = "#000000";
+        this.ctx.lineWidth = this.lineWidth;
 
         // Your existing event listeners can be added here
         const colorPicker = this.shadowRoot.getElementById("color-picker");
