@@ -4,14 +4,14 @@
 
 Add it to the page:
 ```html
-<canvas-with-controls></canvas-with-controls>
+<canvas-with-controls width="500" height="500"></canvas-with-controls>
 <script src="CanvasWithControls.js"></script>
 ```
 If pulling from node_modules, `import 'canvasdraw-webcomponent'` in your main script, then link that source. The HTML tag will be added automatically
 
 Extends HTMLElement natively.
 
-This is mostly a primitive for building on top of.
+This is mostly a primitive for building on top of. E.g. the css controls are limited.
 
 - The unbundled script by default this works by fetching the html and css files associated on first run.
 - The bundled script has the html and css pre-fetched (e.g. with npm install).
