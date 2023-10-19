@@ -16,6 +16,8 @@ This is mostly a primitive for building on top of.
 - The unbundled script by default this works by fetching the html and css files associated on first run.
 - The bundled script has the html and css pre-fetched (e.g. with npm install).
 
+Pan with middle mouse click or alt+left click, zoom with scroll wheel or the slider.
+
 ## Test
 Serve the index.html from this folder to test the component out.
 
