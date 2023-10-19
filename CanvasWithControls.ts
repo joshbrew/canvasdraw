@@ -1,9 +1,20 @@
-// import css from "./CanvasWithControls.css" //uncomment if using bundler and comment out the fetch operations
-// import html from "./CanvasWithControls.html"
+//@ts-ignore
+import css from "./CanvasWithControls.css" //uncomment if using bundler and comment out the fetch operations
+//@ts-ignore
+import html from "./CanvasWithControls.html"
 
-let css, html; //comment out if importing above
+//let css, html; //comment out if importing above
 
 export class CanvasWithControls extends HTMLElement {
+
+    canvas:HTMLCanvasElement;
+    ctx:CanvasRenderingContext2D;
+    canvasWidth:number;
+    canvasHeight:number;
+    lineWidth:number;    
+    shadowRoot:any;
+    fetch?:any;
+
     constructor() {
         super();
         
@@ -12,37 +23,35 @@ export class CanvasWithControls extends HTMLElement {
         this.lineWidth = 5;
 
         this.attachShadow({ mode: "open" });
-
-        
+                
         //Fetch HTML and CSS files asynchronously (comment out if bundling html and css instead)
-        if(!css || !html) {
-            this.fetch = Promise.all([
-                fetch("CanvasWithControls.html").then(response => response.text()),
-                fetch("CanvasWithControls.css").then(response => response.text())
-            ]).then(([h, c]) => {
-                html = h; css = c; //should only fetch once
-                this.shadowRoot.innerHTML = `
-                    <style>
-                        ${css}
-                    </style>
-                    ${html}
-                `;
+        // if(!css || !html) {
+        //     await Promise.all([
+        //         fetch("CanvasWithControls.html").then(response => response.text()),
+        //         fetch("CanvasWithControls.css").then(response => response.text())
+        //     ]).then(([h, c]) => {
+        //         html = h; css = c; //should only fetch once
+        //         this.shadowRoot.innerHTML = `
+        //             <style>
+        //                 ${css}
+        //             </style>
+        //             ${html}
+        //         `;
 
-                // Your component's logic and event listeners here
-                // ...
-            }).catch(error => {
-                console.error("Error fetching resources:", error);
-            });
+        //         // Your component's logic and event listeners here
+        //         // ...
+        //     }).catch(error => {
+        //         console.error("Error fetching resources:", error);
+        //     });
 
-        } else {
+        // } else {
             this.shadowRoot.innerHTML = `
-                    <style>
-                        ${css}
-                    </style>
-                    ${html}
+            <style>
+                ${css}
+            </style>
+            ${html}
             `;
-        }
-
+        //}
     }
 
 
@@ -77,8 +86,8 @@ export class CanvasWithControls extends HTMLElement {
     setup = async () => {
         if(this.fetch) await this.fetch;
 
-        this.canvas = this.shadowRoot.getElementById("canvas");
-        this.ctx = this.canvas.getContext("2d");
+        this.canvas = this.shadowRoot.getElementById("canvas") as HTMLCanvasElement;
+        this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
         const canvas = this.canvas;
         const ctx = this.ctx;
 
@@ -116,8 +125,8 @@ export class CanvasWithControls extends HTMLElement {
         });
 
         let isDrawing = false;
-        let lastX = 0;
-        let lastY = 0;
+        let lastX = 0 as any;
+        let lastY = 0 as any;
 
         let isPanning = false;
         let scale = 1; // Initialize the scale factor
@@ -128,7 +137,7 @@ export class CanvasWithControls extends HTMLElement {
 
         let recenter = false;
 
-        let onzoomEvent = (event) => {
+        let onzoomEvent = (event?) => {
             const rect = canvas.getBoundingClientRect();
             let newScale, offsetXBefore, offsetXAfter, offsetYBefore, offsetYAfter;
 
@@ -176,7 +185,7 @@ export class CanvasWithControls extends HTMLElement {
         });
 
 
-        canvas.parentElement.addEventListener("wheel", (event) => {
+        (canvas.parentElement as HTMLElement).addEventListener("wheel", (event) => {
             event.preventDefault();
             onzoomEvent(event);
         });
@@ -201,13 +210,13 @@ export class CanvasWithControls extends HTMLElement {
             );
         };
 
-        canvas.parentElement.addEventListener("mousedown", (event) => {
+        (canvas.parentElement as HTMLElement).addEventListener("mousedown", (event) => {
             // Check if the middle mouse button is pressed or the Alt key is held down
             if (event.button === 1 || event.altKey) {
                 isPanning = true;
                 initialX = event.clientX - translateX;
                 initialY = event.clientY - translateY;
-                canvas.parentElement.style.cursor = "move";
+                (canvas.parentElement as HTMLElement).style.cursor = "move";
             } else {
                 isDrawing = true;
                 if (isLineDrawingMode) { //need to move to trigger lines
@@ -250,7 +259,7 @@ export class CanvasWithControls extends HTMLElement {
             }
         });
 
-        canvas.parentElement.addEventListener("mousemove", (event) => {
+        (canvas.parentElement as HTMLElement).addEventListener("mousemove", (event) => {
             if (isPanning) {
                 if (event.clientX - initialX !== 0 || event.clientY - initialY !== 0) {
                     translateX = event.clientX - initialX;
@@ -271,12 +280,12 @@ export class CanvasWithControls extends HTMLElement {
             isDrawing = false;
         });
 
-        canvas.parentElement.addEventListener("mouseup", () => {
+        (canvas.parentElement as HTMLElement).addEventListener("mouseup", () => {
             isPanning = false;
-            canvas.parentElement.style.cursor = "default";
+            (canvas.parentElement as HTMLElement).style.cursor = "default";
         });
 
-        canvas.parentElement.addEventListener("mouseout", () => {
+        (canvas.parentElement as HTMLElement).addEventListener("mouseout", () => {
             isPanning = false;
         });
 

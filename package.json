@@ -1,9 +1,10 @@
 {
     "name": "canvasdraw-webcomponent",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "description": "Barebones esbuild and test node server implementation. For building",
     "main": "./dist/CanvasWithControls.js",
     "module": "./dist/CanvasWithControls.esm.js",
+    "types": "./dist/CanvasWithControls.d.ts",
     "type": "module",
     "scripts": {
     },

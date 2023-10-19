@@ -1,13 +1,13 @@
 const config = {
     bundler: { //esbuild settings, set false to skip build step or add bundle:true to config object to only bundle (alt methods)
         entryPoints: [ //entry point file(s). These can include .js, .mjs, .ts, .jsx, .tsx, or other javascript files. Make sure your entry point is a ts file if you want to generate types
-            "CanvasWithControls.js"
+            "CanvasWithControls.ts"
         ],
         outfile: "dist/CanvasWithControls", //exit point file, will append .js as well as indicators like .esm.js, .node.js for other build flags
         //outdir:'dist'         //exit point folder, define for multiple entryPoints
         bundleBrowser: true, //create plain js build? Can include globals and init scripts
         bundleESM: true, //create esm module js files // { platform:'node' } //etc you can also supply an object here to add more specific esbuild settings
-        bundleTypes: false, //create .d.ts files, //you need a .tsconfig for this to work
+        bundleTypes: true, //create .d.ts files, //you need a .tsconfig for this to work
         bundleNode: false, //create node platform plain js build, specify platform:'node' to do the rest of the files 
         bundleHTML: false, //wrap the first entry point file as a plain js script in a boilerplate html file, frontend scripts can be run standalone like a .exe! Server serves this as start page if set to true.
         //bundleIIFE:false,   //create an iife build, this is compiled temporarily to create the types files and only saved with bundleIIFE:true
