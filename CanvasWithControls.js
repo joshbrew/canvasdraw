@@ -1,9 +1,9 @@
-//import css from "./CanvasWithControls.css" //uncomment if using bundler and comment out the fetch operations
-//import html from "./CanvasWithControls.html"
+// import css from "./CanvasWithControls.css" //uncomment if using bundler and comment out the fetch operations
+// import html from "./CanvasWithControls.html"
 
-let css, html;
+let css, html; //comment out if importing above
 
-class CanvasWithControls extends HTMLElement {
+export class CanvasWithControls extends HTMLElement {
     constructor() {
         super();
         

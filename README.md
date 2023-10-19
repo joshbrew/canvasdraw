@@ -7,6 +7,8 @@ Add it to the page:
 <canvas-with-controls></canvas-with-controls>
 <script src="CanvasWithControls.js"></script>
 ```
+If pulling from node_modules, `import 'canvasdraw-webcomponent'` in your main script, then link that source. The HTML tag will be added automatically
+
 Extends HTMLElement natively.
 
 This is mostly a primitive for building on top of.
