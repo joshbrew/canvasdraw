@@ -1,0 +1,26 @@
+{
+    "name": "canvasdraw-webcomponent",
+    "version": "1.0.0",
+    "description": "Barebones esbuild and test node server implementation. For building",
+    "main": "./dist/CanvasWithControls.js",
+    "module": "./dist/CanvasWithControls.esm.js",
+    "type": "module",
+    "scripts": {
+    },
+    "keywords": [
+      "esbuild"
+    ],
+    "author": "",
+    "license": "",
+    "dependencies": {},
+    "devDependencies": {},
+    "nodemonConfig": {
+      "env": {
+        "NODEMON": true
+      },
+      "ignore": [
+        "dist/",
+        ".temp/"
+      ]
+    }
+  }

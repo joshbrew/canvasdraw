@@ -1,30 +1,35 @@
-//import css as "./CanvasWithControls.css" //uncomment if using bundler and comment out the fetch operations
-//import html as "./CanvasWithControls.html"
+//import css from "./CanvasWithControls.css" //uncomment if using bundler and comment out the fetch operations
+//import html from "./CanvasWithControls.html"
 
 let css, html;
-
 
 class CanvasWithControls extends HTMLElement {
     constructor() {
         super();
         
-        this.canvasWidth = 800;
-        this.canvasHeight = 600;
         this.setup();
     }
 
 
     static get observedAttributes() {
-        return ['width', 'height'];
+        return ['width', 'height','controls'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'width') {
             this.canvas.width = parseInt(newValue);
             this.canvasWidth = this.canvas.width;
+            this.ctx.lineWidth = this.lineWidth; // Apply the new line width to the context
         } else if (name === 'height') {
             this.canvas.height = parseInt(newValue);
             this.canvasHeight = this.canvas.height;
+            this.ctx.lineWidth = this.lineWidth; // Apply the new line width to the context
+        } else if(name === 'controls') { 
+            if(newValue && newValue !== 'false') {
+                this.shadowRoot.getElementById('controls-container').style.display = '';
+            } else {
+                this.shadowRoot.getElementById('controls-container').style.display = 'none';
+            }
         }
     }
 
@@ -32,8 +37,9 @@ class CanvasWithControls extends HTMLElement {
     setup = async () => {
         this.attachShadow({ mode: "open" });
 
+        
+        //Fetch HTML and CSS files asynchronously (comment out if bundling html and css instead)
         if(!css || !html) {
-            // Fetch HTML and CSS files asynchronously (comment out if bundling html and css instead)
             await Promise.all([
                 fetch("CanvasWithControls.html").then(response => response.text()),
                 fetch("CanvasWithControls.css").then(response => response.text())
@@ -69,22 +75,20 @@ class CanvasWithControls extends HTMLElement {
         const ctx = this.ctx;
 
         const maxScale = 5;
-        const canvasWidth = 800; // Set the canvas width in pixels
-        const canvasHeight = 600; // Set the canvas height in pixels
         // Set initial canvas width and height
-        this.canvas.width = canvasWidth;
-        this.canvas.height = canvasHeight;
-
+        canvas.width = this.canvasWidth;
+        canvas.height = this.canvasHeight;
+        this.canvasWidth = 800;
+        this.canvasHeight = 600;
         
         let cursorStyle = 'crosshair';
 
         canvas.style.cursor = cursorStyle;
 
         let color = "#000000";
-        let lineWidth = 5;
+        this.lineWidth = 5;
         // Initialize canvas properties
-        this.ctx.strokeStyle = "#000000";
-        this.ctx.lineWidth = 5;
+        ctx.strokeStyle = "#000000";
 
         // Your existing event listeners can be added here
         const colorPicker = this.shadowRoot.getElementById("color-picker");
@@ -176,18 +180,20 @@ class CanvasWithControls extends HTMLElement {
             if (event.button === 1 || event.altKey) {
                 canvas.style.cursor = "move";
             } else {
-                [lastX, lastY] = [event.offsetX * (canvasWidth / canvas.clientWidth), event.offsetY * (canvasHeight / canvas.clientHeight)];
+                [lastX, lastY] = [event.offsetX * (this.canvasWidth / canvas.clientWidth), event.offsetY * (this.canvasHeight / canvas.clientHeight)];
             }
         });
 
         let drawPixel = (event) => {
+            const pixelX = event.offsetX * (this.canvasWidth / canvas.clientWidth);
+            const pixelY = event.offsetY * (this.canvasHeight / canvas.clientHeight);
             ctx.fillRect(
-                event.offsetX * (canvasWidth / canvas.clientWidth) - lineWidth / 2, 
-                event.offsetY * (canvasHeight / canvas.clientHeight) - lineWidth / 2, 
-                lineWidth, 
-                lineWidth
+                pixelX - this.lineWidth / 2,
+                pixelY - this.lineWidth / 2,
+                this.lineWidth,
+                this.lineWidth
             );
-        }
+        };
 
         canvas.parentElement.addEventListener("mousedown", (event) => {
             // Check if the middle mouse button is pressed or the Alt key is held down
@@ -202,7 +208,7 @@ class CanvasWithControls extends HTMLElement {
                 } else {
                     // Pixel drawing mode
                     ctx.fillStyle = color; // Set fill style to the selected color
-                    //twice because it grays out on first draw for some reason
+                    //thrice because it grays out on first draw for some reason
                     drawPixel(event);
                     drawPixel(event);
                     drawPixel(event);
@@ -211,6 +217,26 @@ class CanvasWithControls extends HTMLElement {
 
             
         });
+
+        let draw = (event) => {
+            if (isLineDrawingMode) {
+                ctx.lineCap = "round";
+                ctx.beginPath();
+                ctx.moveTo(
+                    typeof lastX === 'number' ? lastX : event.offsetX * (this.canvasWidth / canvas.clientWidth),
+                    typeof lastY === 'number' ? lastY : event.offsetY * (this.canvasHeight / canvas.clientHeight)
+                );
+                const x = event.offsetX * (this.canvasWidth / canvas.clientWidth);
+                const y = event.offsetY * (this.canvasHeight / canvas.clientHeight);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                [lastX, lastY] = [x, y];
+            } else {
+                // Pixel drawing mode
+                ctx.fillStyle = color;
+                drawPixel(event);
+            }
+        }
 
         canvas.addEventListener("mousemove", (event) => {
             if (isDrawing) {
@@ -271,27 +297,10 @@ class CanvasWithControls extends HTMLElement {
 
         // Event listener for line width input
         lineWidthInput.addEventListener("input", (event) => {
-            lineWidth = parseInt(event.target.value); // Update line width based on user input
-            ctx.lineWidth = lineWidth; // Apply the new line width to the context
+            this.lineWidth = parseInt(event.target.value); // Update line width based on user input
+            ctx.lineWidth = this.lineWidth; // Apply the new line width to the context
         });
 
-        function draw(event) {
-            if (isLineDrawingMode) {
-                ctx.lineCap = "round";
-                ctx.beginPath();
-                ctx.moveTo(
-                    typeof lastX === 'number' ? lastX : event.offsetX * (canvasWidth / canvas.clientWidth), 
-                    typeof lastY === 'number' ? lastY : event.offsetY * (canvasHeight / canvas.clientHeight)
-                );
-                ctx.lineTo(event.offsetX * (canvasWidth / canvas.clientWidth), event.offsetY * (canvasHeight / canvas.clientHeight));
-                ctx.stroke();
-                [lastX, lastY] = [event.offsetX * (canvasWidth / canvas.clientWidth), event.offsetY * (canvasHeight / canvas.clientHeight)];
-            } else {
-                // Pixel drawing mode
-                ctx.fillStyle = color;
-                drawPixel(event);
-            }
-        }
     }
 
     connectedCallback() {
