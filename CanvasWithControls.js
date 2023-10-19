@@ -10,38 +10,8 @@ export class CanvasWithControls extends HTMLElement {
         this.canvasWidth = 800;
         this.canvasHeight = 600;
         this.lineWidth = 5;
-
+     
         this.attachShadow({ mode: "open" });
-
-        
-        //Fetch HTML and CSS files asynchronously (comment out if bundling html and css instead)
-        if(!css || !html) {
-            this.fetch = Promise.all([
-                fetch("CanvasWithControls.html").then(response => response.text()),
-                fetch("CanvasWithControls.css").then(response => response.text())
-            ]).then(([h, c]) => {
-                html = h; css = c; //should only fetch once
-                this.shadowRoot.innerHTML = `
-                    <style>
-                        ${css}
-                    </style>
-                    ${html}
-                `;
-
-                // Your component's logic and event listeners here
-                // ...
-            }).catch(error => {
-                console.error("Error fetching resources:", error);
-            });
-
-        } else {
-            this.shadowRoot.innerHTML = `
-                    <style>
-                        ${css}
-                    </style>
-                    ${html}
-            `;
-        }
 
     }
 
@@ -310,7 +280,37 @@ export class CanvasWithControls extends HTMLElement {
     }
 
     connectedCallback() {
-        // Code to run when the element is added to the DOM
+        // Code to run when the element is added to the DOM   
+
+        //Fetch HTML and CSS files asynchronously (comment out if bundling html and css instead)
+        if(!css || !html) {
+            this.fetch = Promise.all([
+                fetch("CanvasWithControls.html").then(response => response.text()),
+                fetch("CanvasWithControls.css").then(response => response.text())
+            ]).then(([h, c]) => {
+                html = h; css = c; //should only fetch once
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        ${css}
+                    </style>
+                    ${html}
+                `;
+
+                // Your component's logic and event listeners here
+                // ...
+            }).catch(error => {
+                console.error("Error fetching resources:", error);
+            });
+
+        } else {
+            this.shadowRoot.innerHTML = `
+                    <style>
+                        ${css}
+                    </style>
+                    ${html}
+            `;
+        }
+
         this.setup();
     }
 

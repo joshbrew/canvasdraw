@@ -1,15 +1,13 @@
-export declare class CanvasWithControls extends HTMLElement {
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
+export class CanvasWithControls extends HTMLElement {
+    static get observedAttributes(): string[];
     canvasWidth: number;
     canvasHeight: number;
     lineWidth: number;
-    shadowRoot: any;
-    fetch?: any;
-    constructor();
-    static get observedAttributes(): string[];
     attributeChangedCallback(name: any, oldValue: any, newValue: any): void;
     setup: () => Promise<void>;
+    canvas: HTMLElement;
+    ctx: any;
     connectedCallback(): void;
+    fetch: Promise<void>;
     disconnectedCallback(): void;
 }
